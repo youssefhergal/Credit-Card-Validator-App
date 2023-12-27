@@ -1,0 +1,17 @@
+
+    <h2 class="text-center">Credit Card Validator</h2>
+
+    <div th:if="${message != null}" th:text="${message}" class="alert"></div>
+
+
+    <form th:action="@{/api/creditcards/isvalidenumber}" method="post" class="mt-3">
+        <div class="form-group">
+            <label for="cardNumber">Credit Card Number:</label>
+            <input type="text" id="cardNumber" name="cardNumber" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Validate</button>
+    </form>
+
+    </div>
+
+
