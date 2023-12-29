@@ -1,0 +1,40 @@
+<th:block th:include="header.html"></th:block>
+
+
+
+<div class="container mt-4" id="contentContainer">
+    <div class="card  offset-md-3 col-md-6">
+        <div class="card-header  text-center">
+            <h2>Credit Card Validator</h2>
+        </div>
+        <div class="card-body">
+
+
+            <div th:if="${message != null}" th:text="${message}" class="alert alert-info"></div>
+
+            <form th:action="@{/api/creditcards/isvalidenumber}" method="post" class="mt-3">
+                <div class="form-group">
+                    <label for="cardNumber">Credit Card Number:</label>
+                    <input type="text" id="cardNumber" name="cardNumber" class="form-control" required>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success btn-block text-center">Validate</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<script src ="/js/code.js"></script>
+
+
+
+</body>
+</html>

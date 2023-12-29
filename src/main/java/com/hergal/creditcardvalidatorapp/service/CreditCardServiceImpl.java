@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class CreditCardServiceImpl implements CreditCardServiceInterface {
@@ -47,20 +48,21 @@ public class CreditCardServiceImpl implements CreditCardServiceInterface {
 
 
     @Override
-    public boolean isCreditCardExistsWithDetails(CreditCard creditCard) {
-        return creditCardRepository.existsByNumberAndExpiryDateAndControlNumberAndType(
-                creditCard.getNumber(),
-                creditCard.getExpiryDate(),
-                creditCard.getControlNumber(),
-                creditCard.getType()
-        );
-    }
-
-    @Override
     public CreditCard saveCreditCardDetails(CreditCard creditCard) {
         String newCreditCardNumber = LuhnAlgorithm.generateCreditCardNumber();
         creditCard.setNumber(newCreditCardNumber);
         return creditCardRepository.save(creditCard);
+    }
+
+    @Override
+    public List<CreditCard> getAllCreditCards() {
+        return  creditCardRepository.findAll();
+    }
+
+    @Override
+    public boolean isCreditCardPresent(String cardNumber, String firstName, String lastName, String expiryDate) {
+
+        return creditCardRepository.existsByNumberAndNomAndPrenomAndExpiryDate(cardNumber, lastName, firstName, expiryDate);
     }
 
 

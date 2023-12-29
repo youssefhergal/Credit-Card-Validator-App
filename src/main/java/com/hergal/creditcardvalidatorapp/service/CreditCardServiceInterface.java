@@ -2,6 +2,8 @@ package com.hergal.creditcardvalidatorapp.service;
 
 import com.hergal.creditcardvalidatorapp.model.CreditCard;
 
+import java.util.List;
+
 public interface CreditCardServiceInterface {
 
 
@@ -12,7 +14,11 @@ public interface CreditCardServiceInterface {
 
      boolean isCreditCardValid(String creditCardNumber);
 
-    boolean isCreditCardExistsWithDetails(CreditCard creditCard);
 
     CreditCard saveCreditCardDetails(CreditCard creditCard);
+
+    List<CreditCard> getAllCreditCards();
+
+
+    boolean isCreditCardPresent(String cardNumber, String firstName, String lastName, String expiryDate);
 }

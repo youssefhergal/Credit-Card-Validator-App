@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api")
@@ -25,7 +26,7 @@ public class CreditCardWebController {
 
     @GetMapping(path = "/isvalid")
     public String showForm() {
-        return "navbar";
+        return "valider_number";
     }
 
     @PostMapping("/creditcards/isvalidenumber")
@@ -36,14 +37,14 @@ public class CreditCardWebController {
         } else {
             model.addAttribute("message", "Le numéro de carte n'est pas valide");
         }
-        return "navbar";
+        return "valider_number";
     }
 
 
     @GetMapping("/ajouter")
     public String showAddCardForm(Model model) {
         System.out.println("etete");
-        return "form";
+        return "ajouter_card";
     }
 
     @PostMapping("/creditcards/saveCard")
@@ -62,16 +63,40 @@ public class CreditCardWebController {
 
         model.addAttribute("message", "Carte enregistrée avec succès");
 
-        return "form";
+        return "ajouter_card";
     }
 
 
-
-
-    @GetMapping("/creditcards/verifierClient")
-    public String showCreditCardForm(Model model) {
-
-        return null;
+    @GetMapping("/viewAll")
+    public String viewAllCreditCards(Model model) {
+        List<CreditCard> creditCards = creditCardService.getAllCreditCards();
+        model.addAttribute("creditCards", creditCards);
+        return "afficher_cards"; // Nom de la vue à afficher
     }
+
+    @GetMapping("/verifier")
+    public String showVerifyCardForm(Model model) {
+        return "chercher_card";
+    }
+    @PostMapping("/creditcards/verifierClient")
+    public String verifyClient(
+            @RequestParam("cardNumber") String cardNumber,
+            @RequestParam("firstName") String firstName,
+            @RequestParam("lastName") String lastName,
+            @RequestParam("expiryDate") String expiryDate,
+            Model model) {
+
+        boolean isCardPresent = creditCardService.isCreditCardPresent(cardNumber, firstName, lastName, expiryDate);
+
+        if (isCardPresent) {
+            model.addAttribute("message", "La carte se trouve dans la base de données");
+        } else {
+            model.addAttribute("message", "La carte n'est pas présente dans la base de données");
+        }
+
+        return "chercher_card";
+    }
+
+
 
 }

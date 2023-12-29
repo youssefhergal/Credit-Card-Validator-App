@@ -1,0 +1,46 @@
+<th:block th:include="header.html"></th:block>
+<div class="container mt-4" id="contentContainer">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="text-center">Toutes les Cartes de Crédit</h2>
+        </div>
+        <div class="card-body">
+            <table class="table mt-3">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Numéro de Carte</th>
+                    <th scope="col">Date d'Expiration</th>
+                    <th scope="col">Type de Carte</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="creditCard : ${creditCards}">
+                    <td th:text="${creditCard.id}"></td>
+                    <td th:text="${creditCard.number}"></td>
+                    <td th:text="${creditCard.expiryDate}"></td>
+                    <td th:text="${creditCard.type}"></td>
+                    <td th:text="${creditCard.nom}"></td>
+                    <td th:text="${creditCard.prenom}"></td>
+                    <td>
+                        <a href="#" class="btn btn-danger" th:attr="data-id=${creditCard.id}" onclick="deleteCard(this)">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                        <a href="#" class="btn btn-primary" th:attr="data-id=${creditCard.id}" onclick="editCard(this)">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

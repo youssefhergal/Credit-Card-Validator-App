@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let verifiercarte = document.querySelector("#verfiercarte");
 
     save.addEventListener("click", function () {
-        loadContentFromFile('form.html');
+        loadContentFromFile('ajouter_card.html');
     });
 
     valide.addEventListener("click", function () {
