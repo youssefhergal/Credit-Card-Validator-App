@@ -23,7 +23,6 @@ public class CreditCardWebController {
     }
 
 
-
     @GetMapping(path = "/isvalid")
     public String showForm() {
         return "valider_number";
@@ -43,13 +42,11 @@ public class CreditCardWebController {
 
     @GetMapping("/ajouter")
     public String showAddCardForm(Model model) {
-        System.out.println("etete");
         return "ajouter_card";
     }
 
     @PostMapping("/creditcards/saveCard")
     public String saveCreditCard(@ModelAttribute CreditCard creditCard, Model model) {
-        System.out.println("testt");
         System.out.println(creditCard.toString());
         String generatedCardNumber = LuhnAlgorithm.generateCreditCardNumber();
         creditCard.setNumber(generatedCardNumber);
@@ -71,32 +68,44 @@ public class CreditCardWebController {
     public String viewAllCreditCards(Model model) {
         List<CreditCard> creditCards = creditCardService.getAllCreditCards();
         model.addAttribute("creditCards", creditCards);
-        return "afficher_cards"; // Nom de la vue à afficher
+        return "afficher_cards";
     }
 
     @GetMapping("/verifier")
     public String showVerifyCardForm(Model model) {
         return "chercher_card";
     }
+
     @PostMapping("/creditcards/verifierClient")
     public String verifyClient(
             @RequestParam("cardNumber") String cardNumber,
-            @RequestParam("firstName") String firstName,
-            @RequestParam("lastName") String lastName,
-            @RequestParam("expiryDate") String expiryDate,
             Model model) {
 
-        boolean isCardPresent = creditCardService.isCreditCardPresent(cardNumber, firstName, lastName, expiryDate);
+        // Sépare le nom et le prénom
+//        String[] nameParts = fullName.split("\\s+");
+//        String firstName = "";
+//        String lastName = "";
+//
+//        if (nameParts.length > 0) {
+//            lastName = nameParts[0];
+//        }
+//
+//        if (nameParts.length > 1) {
+//            firstName = nameParts[1];
+//        }
+//
+//        // Concatène le mois et l'année pour former la date d'expiration complète
+//        String expiryDate = expiryMonth + "/" + expiryYear;
 
-        if (isCardPresent) {
-            model.addAttribute("message", "La carte se trouve dans la base de données");
+        boolean isValid = creditCardService.isCreditCardValid(cardNumber);
+        if (isValid) {
+            model.addAttribute("message", "La carte est valide");
         } else {
-            model.addAttribute("message", "La carte n'est pas présente dans la base de données");
+            model.addAttribute("message", "La carte n'est pas valide");
         }
 
         return "chercher_card";
     }
-
 
 
 }

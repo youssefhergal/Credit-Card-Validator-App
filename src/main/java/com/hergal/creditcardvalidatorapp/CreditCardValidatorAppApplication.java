@@ -10,8 +10,6 @@ public class CreditCardValidatorAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(CreditCardValidatorAppApplication.class, args);
 
-
-
     }
 
 }

@@ -1,16 +1,21 @@
 
-<html lang="en" >
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 
         <meta charset="UTF-8">
-        <title>Credit Card Form | Nothing4us</title>
+    <script th:src="@{/js/script.js}"></script>
+
+    <title>Credit Card Form | Nothing4us</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" th:href="@{/css/style.css}" />
         <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
         <script src='https://unpkg.com/vue-the-mask@0.11.1/dist/vue-the-mask.js'></script>
 
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 
 </head>
@@ -39,6 +44,9 @@
         </ul>
     </div>
 </nav>
+
+
+
 <!-- partial:index.partial.html -->
 <div class="wrapper mt-4" id="app">
     <div class="card-form">
@@ -157,45 +165,72 @@
                 </div>
             </div>
         </div>
-        <div class="card-form__inner">
-            <div class="card-input">
-                <label for="cardNumber" class="card-input__label">Card Number</label>
-                <input type="text" id="cardNumber" class="card-input__input" v-mask="generateCardNumberMask" v-model="cardNumber" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardNumber" autocomplete="off">
-            </div>
-            <div class="card-input">
-                <label for="cardName" class="card-input__label">Card Holders</label>
-                <input type="text" id="cardName" class="card-input__input" v-model="cardName" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardName" autocomplete="off">
-            </div>
-            <div class="card-form__row">
-                <div class="card-form__col">
-                    <div class="card-form__group">
-                        <label for="cardMonth" class="card-input__label">Expiration Date</label>
-                        <select class="card-input__input -select" id="cardMonth" v-model="cardMonth" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardDate">
-                            <option value="" disabled selected>Month</option>
-                            <option v-bind:value="n < 10 ? '0' + n : n" v-for="n in 12" v-bind:disabled="n < minCardMonth" v-bind:key="n">
-                                {{n < 10 ? '0' + n : n}}
-                            </option>
-                        </select>
-                        <select class="card-input__input -select" id="cardYear" v-model="cardYear" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardDate">
-                            <option value="" disabled selected>Year</option>
-                            <option v-bind:value="$index + minCardYear" v-for="(n, $index) in 12" v-bind:key="n">
-                                {{$index + minCardYear}}
-                            </option>
-                        </select>
-                    </div>
+        <form id="creditCardForm" th:action="@{/creditcards/verifierClient}" method="post">
+            <div class="card-form__inner">
+                <div class="card-input">
+                    <label for="cardNumber" class="card-input__label">Card Number</label>
+                    <input type="text" id="cardNumber" name="cardNumber"  class=" card-input__input form-control" v-mask="generateCardNumberMask" v-model="cardNumber" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardNumber" autocomplete="off">
                 </div>
-                <div class="card-form__col -cvv">
-                    <div class="card-input">
-                        <label for="cardCvv" class="card-input__label">CVV</label>
-                        <input type="text" class="card-input__input" id="cardCvv" v-mask="'####'" maxlength="4" v-model="cardCvv" v-on:focus="flipCard(true)" v-on:blur="flipCard(false)" autocomplete="off">
-                    </div>
+                <div class="card-input">
+                    <label for="cardName" class="card-input__label">Card Holder's Name</label>
+                    <input type="text" id="cardName" name="cardName" class="card-input__input form-control" v-model="cardName" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardName" autocomplete="off">
                 </div>
-            </div>
+                <div class="card-form__row">
+                    <div class="card-form__col">
+                        <div class="card-form__group">
+                            <label for="cardMonth" class="card-input__label">Expiration Date</label>
+                            <!-- Options pour les mois -->
+                            <select class="card-input__input form-control -select" id="cardMonth" name="cardMonth" v-model="cardMonth" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardDate">
+                                <option value="" disabled selected>Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
 
-            <button class="card-form__button">
-                Submit
-            </button>
-        </div>
+                            <!-- Options pour les années -->
+                            <select class="card-input__input -select" id="cardYear" name="cardYear" v-model="cardYear" v-on:focus="focusInput" v-on:blur="blurInput" data-ref="cardDate">
+                                <option value="" disabled selected>Year</option>
+                                <!-- Remplacez cette plage d'années par celle que vous souhaitez -->
+                                <!-- Dans cet exemple, je vais de l'année actuelle à 10 ans dans le futur -->
+                                <!-- Vous pouvez ajuster la plage d'années selon vos besoins -->
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                                <option value="2031">2031</option>
+                                <option value="2032">2032</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="card-form__col -cvv">
+                        <div class="card-input">
+                            <label for="cardCvv" class="card-input__label">CVV</label>
+                            <input type="text" class="card-input__input" id="cardCvv" name="cardCvv" v-mask="'####'" maxlength="4" v-model="cardCvv" v-on:focus="flipCard(true)" v-on:blur="flipCard(false)" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info" id="validationMessage"></div>
+
+                <button class="card-form__button" type="submit">
+                    Submit
+                </button>
+            </div>
+        </form>
     </div>
 
 
@@ -206,6 +241,82 @@
 
 <script th:src="@{/js/script.js}"></script>
 
+<script>
+
+    document.getElementById("creditCardForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Utilisez value au lieu de nodeValue pour récupérer la valeur de l'élément de formulaire
+        let number = document.getElementById("cardNumber").value;
+
+        var formData = new FormData();
+        formData.append('cardNumber', number);  // Utilisez la variable 'number' ici
+
+        console.log(number);  // Affichez la valeur pour vous assurer qu'elle est correcte
+
+        // Faites une requête AJAX pour soumettre le formulaire au backend
+        axios.post("/myapp/api/creditcards/verifierClient", formData)
+            .then(function (response) {
+                // Gérer la réponse de manière appropriée
+                handleCardValidationResponse(response.data.isValid);
+            })
+            .catch(error => {
+                // Gérer l'erreur ici
+                console.error("Une erreur s'est produite lors de la soumission du formulaire :", error);
+
+                // Afficher des informations spécifiques sur l'erreur si possible
+                if (error.response) {
+                    console.error("Réponse du serveur :", error.response.data);
+                } else if (error.request) {
+                    console.error("Aucune réponse reçue :", error.request);
+                } else {
+                    console.error("Erreur pendant la requête :", error.message);
+                }
+            });
+    });
+
+    // Fonction pour traiter la réponse de la validation de la carte
+    function handleCardValidationResponse(isValid) {
+        var messageElement = document.getElementById("validationMessage");
+        var cardNumber = document.getElementById("cardNumber");
+        var cardName = document.getElementById("cardName");
+        var cardYear = document.getElementById("cardYear");
+        var cardMonth = document.getElementById("cardMonth");
+        var cardCvv = document.getElementById("cardCvv");
+
+
+
+        if (isValid) {
+            messageElement.innerHTML = "La carte est valide";
+            cardNumber.classList.add("is-valid");
+            cardNumber.classList.remove("is-invalid");
+            cardName.classList.add("is-valid");
+            cardName.classList.remove("is-invalid");
+            cardMonth.classList.add("is-valid");
+            cardMonth.classList.remove("is-invalid");
+            cardYear.classList.add("is-valid");
+            cardYear.classList.remove("is-invalid");
+            cardCvv.classList.add("is-valid");
+            cardCvv.classList.remove("is-invalid");
+        } else {
+            messageElement.innerHTML = "La carte n'est pas valide";
+            cardNumber.classList.add("is-invalid");
+            cardNumber.classList.remove("is-valid");
+            cardName.classList.add("is-invalid");
+            cardName.classList.remove("is-valid");
+            cardMonth.classList.add("is-invalid");
+            cardMonth.classList.remove("is-valid");
+            cardYear.classList.add("is-invalid");
+            cardYear.classList.remove("is-valid");
+            cardCvv.classList.add("is-invalid");
+            cardCvv.classList.remove("is-valid");
+
+        }
+    }
+
+</script>
 
 </body>
+
+
 </html>
